@@ -42,9 +42,10 @@ EFI_DRIVER_BINDING_PROTOCOL gPartitionDriverBinding = {
 // Prioritized function list to detect partition table. 
 //
 PARTITION_DETECT_ROUTINE mPartitionDetectRoutineTable[] = {
-  PartitionInstallGptChildHandles,
-  PartitionInstallElToritoChildHandles,
-  PartitionInstallMbrChildHandles,
+  PartitionInstallAddLbaOfsChildHandles,
+  //PartitionInstallGptChildHandles,
+  //PartitionInstallElToritoChildHandles,
+  //PartitionInstallMbrChildHandles,
   NULL
 };
 
@@ -71,10 +72,15 @@ PartitionDriverBindingSupported (
   IN EFI_DEVICE_PATH_PROTOCOL     *RemainingDevicePath
   )
 {
+#undef FN
+#define FN "PartitionDriverBindingSupported"
+#define DBG_PartitionDriverBindingSupported DL_DISABLED /* DL_DISABLED DL_80 */
   EFI_STATUS                Status;
   EFI_DEVICE_PATH_PROTOCOL  *ParentDevicePath;
   EFI_DISK_IO_PROTOCOL      *DiskIo;
   EFI_DEV_PATH              *Node;
+
+  //DBG_PR(DBG_PartitionDriverBindingSupported, "entered\n");
 
   //
   // Check RemainingDevicePath validation
@@ -97,6 +103,8 @@ PartitionDriverBindingSupported (
       }
     }
   }
+
+  DBG_PR(DBG_PartitionDriverBindingSupported, "after RemainingDevicePath\n");
 
   //
   // Open the IO Abstraction(s) needed to perform the supported test
@@ -166,6 +174,7 @@ PartitionDriverBindingSupported (
                   EFI_OPEN_PROTOCOL_TEST_PROTOCOL
                   );
 
+  DBG_PR(DBG_PartitionDriverBindingSupported, "leaving %r\n", Status);
   return Status;
 }
 
@@ -192,6 +201,9 @@ PartitionDriverBindingStart (
   IN EFI_DEVICE_PATH_PROTOCOL     *RemainingDevicePath
   )
 {
+#undef FN
+#define FN "PartitionDriverBindingStart"
+#define DBG_PartitionDriverBindingStart DL_DISABLED /* DL_DISABLED DL_80 */
   EFI_STATUS                Status;
   EFI_STATUS                OpenStatus;
   EFI_BLOCK_IO_PROTOCOL     *BlockIo;
@@ -202,6 +214,8 @@ PartitionDriverBindingStart (
   PARTITION_DETECT_ROUTINE  *Routine;
   BOOLEAN                   MediaPresent;
   EFI_TPL                   OldTpl;
+
+  //DBG_PR(DBG_PartitionDriverBindingStart, "entered\n");
 
   BlockIo2 = NULL;
   OldTpl = gBS->RaiseTPL (TPL_CALLBACK); 
@@ -218,6 +232,8 @@ PartitionDriverBindingStart (
       goto Exit;
     }
   }
+
+  DBG_PR(DBG_PartitionDriverBindingStart, "after RemainingDevicePath\n");
 
   //
   // Try to open BlockIO and BlockIO2. If BlockIO would be opened, continue,
@@ -309,6 +325,7 @@ PartitionDriverBindingStart (
     // media supports a given partition type install child handles to represent
     // the partitions described by the media.
     //
+    DBG_PR(DBG_PartitionDriverBindingStart, "before mPartitionDetectRoutineTable[]\n");
     Routine = &mPartitionDetectRoutineTable[0];
     while (*Routine != NULL) {
       Status = (*Routine) (
@@ -368,6 +385,7 @@ PartitionDriverBindingStart (
 
 Exit:
   gBS->RestoreTPL (OldTpl);
+  DBG_PR(DBG_PartitionDriverBindingStart, "leaving %r\n", Status);
   return Status;
 }
 
@@ -1081,8 +1099,13 @@ PartitionInstallChildHandle (
   IN  BOOLEAN                      InstallEspGuid
   )
 {
+#undef FN
+#define FN "PartitionInstallChildHandle"
+#define DBG_PartitionInstallChildHandle DL_80 /* DL_DISABLED DL_80 */
   EFI_STATUS              Status;
   PARTITION_PRIVATE_DATA  *Private;
+
+  DBG_PR(DBG_PartitionInstallChildHandle, "entered\n");
 
   Status  = EFI_SUCCESS;
   Private = AllocateZeroPool (sizeof (PARTITION_PRIVATE_DATA));

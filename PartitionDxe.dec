@@ -1,0 +1,47 @@
+## @file
+#  AddLbaOfs -- UEFI AddLbaOfs Driver
+#  Copyright (C) 2016  Enmotus, Inc.
+#
+#  http://www.enmotus.com
+#  65 Enterprise
+#  Aliso Viejo, CA 92656
+#  Phone: 949.330.6220
+#  Info@enmotus.com
+#  sales@enmotus.com
+#  saleseurope@enmotus.com
+#  Roger C. Pao <rcpao.enmotus+AddLbaOfsEfi@gmail.com>
+#
+#
+#  GNU General Public License, version 2
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation; only version 2
+#  of the License.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+##
+
+[Defines]
+  DEC_SPECIFICATION = 0x00010005
+  PACKAGE_NAME      = PartitionDxe
+  #PACKAGE_GUID      = 658eb930-d033-11e5-9a0c-005056c00008
+  PACKAGE_GUID      = E4EBA32D-E1FB-4AC9-A02C-0C70EAE7CDB7
+  PACKAGE_VERSION   = 0.1
+
+[Includes]
+  Include
+
+[LibraryClasses]
+
+[Protocols]
+
+[Guids]
