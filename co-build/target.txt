@@ -25,7 +25,8 @@
 #                                               files.
 #ACTIVE_PLATFORM       = Nt32Pkg/Nt32Pkg.dsc
 #ACTIVE_PLATFORM       = RamDiskPkg/RamDiskPkg.dsc
-ACTIVE_PLATFORM       = AddLbaOfsPkg/AddLbaOfsPkg.dsc
+#ACTIVE_PLATFORM       = AddLbaOfsPkg/AddLbaOfsPkg.dsc
+ACTIVE_PLATFORM       = AddLbaOfsPartitionDxe/PartitionDxe.dsc
 #ACTIVE_PLATFORM       = TierDiskPkg/TierDiskPkg.dsc
 
 #  TARGET                List       Optional    Zero or more of the following: DEBUG, RELEASE, NOOPT

@@ -65,7 +65,7 @@ typedef struct {
 
 **/
 BOOLEAN
-PartitionValidMbr (
+PartitionValidAddLbaOfs (
   IN  MASTER_BOOT_RECORD      *Mbr,
   IN  EFI_LBA                 LastLba
   )
@@ -84,7 +84,7 @@ PartitionValidMbr (
   EFI_LBA AddLbaOfs;
   
   
-  if (Mbr->Signature != MBR_SIGNATURE) {
+  if (Mbr->Signature != MBR_SIGNATURE + 1) {
     return FALSE;
   }
 
@@ -167,13 +167,13 @@ PartitionInstallAddLbaOfsChildHandles (
                      BlockSize,
                      Mbr
                      );
-  DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ReadDisk MediaId=%d %r\n", MediaId, Status);
+  DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ReadDisk MediaId=%"PRIx32" %r\n", MediaId, Status);
   if (EFI_ERROR (Status)) {
     Found = Status;
     goto Done;
   }
   DBG_X(DBG_PartitionInstallAddLbaOfsChildHandles, (PrBufxxdr(Mbr, BlockSize)));
-  if (!PartitionValidMbr (Mbr, LastBlock)) {
+  if (!PartitionValidAddLbaOfs (Mbr, LastBlock)) {
     goto Done;
   }
   DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ValidMbr\n");
@@ -205,10 +205,10 @@ PartitionInstallAddLbaOfsChildHandles (
 
   ZeroMem (&HdDev, sizeof (HdDev));
   HdDev.Header.Type     = MEDIA_DEVICE_PATH;
-  HdDev.Header.SubType  = MEDIA_HARDDRIVE_DP;
+  HdDev.Header.SubType  = MEDIA_HARDDRIVE_DP; //TBD MEDIA_VENDOR_DP
   SetDevicePathNodeLength (&HdDev.Header, sizeof (HdDev));
   HdDev.MBRType         = MBR_TYPE_PCAT; //TBD
-  HdDev.SignatureType   = SIGNATURE_TYPE_MBR; //TBD
+  HdDev.SignatureType   = SIGNATURE_TYPE_GUID + 1; //TBD
 
   if (LastDevicePathNode == NULL) {
     //

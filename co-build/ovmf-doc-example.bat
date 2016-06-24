@@ -13,7 +13,7 @@ rem "c:\Program Files\qemu\qemu-system-x86_64.exe" -no-kvm -net none -m 1024 -bi
 rem debugcon.txt is always empty (0 bytes)
 
 rem "c:\Program Files\qemu\qemu-system-x86_64.exe" -no-kvm -net none -m 1024 -bios .\OVMF.fd -serial file:serial.txt -debugcon file:debugcon.txt -hda fat:hda-contents -hdb "EFI ESXi 6.0u1 1GB-4GB_single_drive_tier.qcow2"
-"c:\Program Files\qemu\qemu-system-x86_64.exe" -no-kvm -net none -m 1024 -bios .\OVMF.fd -serial file:serial.raw -debugcon file:debugcon.txt -hda fat:hda-contents -hdb "w7pro64-vm-bun-1g-AddLbaOfs.qcow2"
+"c:\Program Files\qemu\qemu-system-x86_64.exe" -no-kvm -net none -m 1024 -bios .\OVMF.fd -serial file:serial.raw -debugcon file:debugcon.txt -nodefaults -hda fat:hda-contents -hdb "w7pro64-vm-bun-1g-AddLbaOfs.qcow2"
 
 rem "c:\Program Files\qemu\qemu-system-x86_64.exe" -no-kvm -net none -m 1024 -bios .\OVMF.fd -serial file:serial.txt -debugcon file:debugcon.txt -global isa-debugcon.iobase=0x402 -hda fat:hda-contents -hdb "C:\Users\develop1\Documents\Virtual Machines\EFI ESXi 6.0u1 1GB\EFI ESXi 6.0u1 1GB-4GB_single_drive_tier.raw"
 rem "c:\Program Files\qemu\qemu-system-x86_64.exe" -no-kvm -net none -m 1024 -bios .\OVMF.fd -serial file:serial.txt -debugcon file:debugcon.txt -global isa-debugcon.iobase=0x402 -hda fat:hda-contents -hdb "C:\Users\develop1\Documents\Virtual Machines\EFI ESXi 6.0u1 1GB\EFI ESXi 6.0u1 1GB-4GB_single_drive_tier.raw" -hdc "C:\Users\develop1\Documents\Virtual Machines\EFI ESXi 6.0u1 1GB\EFI ESXi 6.0u1 1GB-4GB_single_drive_tier.raw"

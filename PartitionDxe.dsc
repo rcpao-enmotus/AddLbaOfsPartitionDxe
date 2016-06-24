@@ -31,12 +31,12 @@
 ##
 
 [Defines]
-  PLATFORM_NAME                  = PartitionDxe
+  PLATFORM_NAME                  = AddLbaOfsPartitionDxe
   #PLATFORM_GUID                  = 65912a30-d033-11e5-894c-005056c00008
   PLATFORM_GUID                  = E4EBA32D-E1FB-4AC9-A02C-0C70EAE7CDB7
   PLATFORM_VERSION               = 0.1
   DSC_SPECIFICATION              = 0x00010005
-  OUTPUT_DIRECTORY               = Build/PartitionDxe
+  OUTPUT_DIRECTORY               = Build/AddLbaOfsPartitionDxe
   SUPPORTED_ARCHITECTURES        = IA32|IPF|X64|EBC|ARM
   BUILD_TARGETS                  = DEBUG|RELEASE
   SKUID_IDENTIFIER               = DEFAULT
@@ -66,7 +66,7 @@
 [Components.IA32]
 
 [Components.X64]
-  PartitionDxe/PartitionDxe.inf
+  AddLbaOfsPartitionDxe/PartitionDxe.inf
 
 [Components.IPF]
 

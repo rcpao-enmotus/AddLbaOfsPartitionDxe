@@ -9,7 +9,7 @@ rem set SRCDIR=C:\Users\%USERNAME%\Documents\NonBuildbotArea\UDK2014.IHV\AddLbaO
 rem set SRCDIR=UDK2014_IHV\UDK2014.IHV\Build\AddLbaOfsPkg\RELEASE_VS2012x86\X64
 
 rem edksetup.bat; build.exe
-set SRCDIR=..\..\..\UDK2014.IHV\Build\PartitionDxe\RELEASE_VS2012x86\X64
+set SRCDIR=..\..\..\UDK2014.IHV\Build\AddLbaOfsPartitionDxe\RELEASE_VS2012x86\X64
 
 set DSTDIR=C:\Users\%USERNAME%\Documents\ovmf
 

@@ -129,6 +129,9 @@ PartitionInstallMbrChildHandles (
   IN  EFI_DEVICE_PATH_PROTOCOL     *DevicePath
   )
 {
+#undef FN
+#define FN "PartitionInstallMbrChildHandles"
+#define DBG_PartitionInstallMbrChildHandles DL_80 /* DL_DISABLED DL_80 */
   EFI_STATUS                Status;
   MASTER_BOOT_RECORD        *Mbr;
   UINT32                    ExtMbrStartingLba;
@@ -142,6 +145,9 @@ PartitionInstallMbrChildHandles (
   UINT32                    BlockSize;
   UINT32                    MediaId;
   EFI_LBA                   LastBlock;
+
+
+  DBG_PR(DBG_PartitionInstallMbrChildHandles, "entered\n");
 
   Found           = EFI_NOT_FOUND;
 
@@ -161,6 +167,7 @@ PartitionInstallMbrChildHandles (
                      BlockSize,
                      Mbr
                      );
+  DBG_PR(DBG_PartitionInstallMbrChildHandles, "ReadDisk MediaId=%"PRIx32" %r\n", MediaId, Status);
   if (EFI_ERROR (Status)) {
     Found = Status;
     goto Done;
