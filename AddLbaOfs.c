@@ -83,10 +83,13 @@ PartitionValidAddLbaOfs (
   BOOLEAN MbrValid;
   EFI_LBA AddLbaOfs;
   
-  
+
+#if 0  
+  /* (MBR_SIGNATURE + 1) OVMF zeroes out 0x55AB?! */
   if (Mbr->Signature != MBR_SIGNATURE + 1) {
     return FALSE;
   }
+#endif
 
   DBG_X(DBG_PartitionValidMbr, (PrBufxxdr((UINT8 *)&Mbr->BootStrapCode[ADDLBAOFS_SIG_OFS], ADDLBAOFS_SIG_STR_LEN)));
   if (CompareMem(&Mbr->BootStrapCode[ADDLBAOFS_SIG_OFS], ADDLBAOFS_SIG_STR, ADDLBAOFS_SIG_STR_LEN) != 0) {
@@ -161,15 +164,15 @@ PartitionInstallAddLbaOfsChildHandles (
     return Found;
   }
 
-  for (Lba = 0; Lba < 64; Lba++) {
+  for (Lba = 0; Lba < 1; Lba++) {
     Status = DiskIo->ReadDisk(
                      DiskIo,
                      MediaId,
-                     Lba,
+                     Lba * BlockSize,
                      BlockSize,
                      Mbr
                      );
-    DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ReadDisk MediaId=%"PRIx32" Lba=%"PRIx64" %r\n", MediaId, Lba, Status);
+    DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ReadDisk MediaId=%"PRIx32" Lba*BlockSize=%"PRIx64" %r\n", MediaId, Lba * BlockSize, Status);
     if (!EFI_ERROR(Status)) {
       DBG_X(DBG_PartitionInstallAddLbaOfsChildHandles, (PrBufxxdr(Mbr, BlockSize)));
       if (PartitionValidAddLbaOfs (Mbr, LastBlock)) {
@@ -178,14 +181,15 @@ PartitionInstallAddLbaOfsChildHandles (
       }
     }
 
+#if 0
     Status = DiskIo->ReadDisk(
                      DiskIo,
                      MediaId,
-                     LastBlock - Lba,
+                     (LastBlock - Lba) * BlockSize,
                      BlockSize,
                      Mbr
                      );
-    DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ReadDisk MediaId=%"PRIx32" LastBlock - Lba=%"PRIx64" %r\n", MediaId, LastBlock - Lba, Status);
+    DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ReadDisk MediaId=%"PRIx32" (LastBlock-Lba)*BlockSize=%"PRIx64" %r\n", MediaId, (LastBlock - Lba) * BlockSize, Status);
     if (!EFI_ERROR(Status)) {
       DBG_X(DBG_PartitionInstallAddLbaOfsChildHandles, (PrBufxxdr(Mbr, BlockSize)));
       if (PartitionValidAddLbaOfs (Mbr, LastBlock)) {
@@ -193,6 +197,7 @@ PartitionInstallAddLbaOfsChildHandles (
         goto ValidMbr;
       }
     }
+#endif
   } /* for */
   goto Done;
 ValidMbr:
