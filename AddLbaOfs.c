@@ -145,6 +145,7 @@ PartitionInstallAddLbaOfsChildHandles (
   UINT32                    MediaId;
   EFI_LBA                   LastBlock;
   EFI_LBA                   AddLbaOfs;
+  EFI_LBA                   Lba;
 
 
   DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "entered\n");
@@ -160,23 +161,41 @@ PartitionInstallAddLbaOfsChildHandles (
     return Found;
   }
 
-  Status = DiskIo->ReadDisk (
+  for (Lba = 0; Lba < 64; Lba++) {
+    Status = DiskIo->ReadDisk(
                      DiskIo,
                      MediaId,
-                     0,
+                     Lba,
                      BlockSize,
                      Mbr
                      );
-  DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ReadDisk MediaId=%"PRIx32" %r\n", MediaId, Status);
-  if (EFI_ERROR (Status)) {
-    Found = Status;
-    goto Done;
-  }
-  DBG_X(DBG_PartitionInstallAddLbaOfsChildHandles, (PrBufxxdr(Mbr, BlockSize)));
-  if (!PartitionValidAddLbaOfs (Mbr, LastBlock)) {
-    goto Done;
-  }
-  DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ValidMbr\n");
+    DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ReadDisk MediaId=%"PRIx32" Lba=%"PRIx64" %r\n", MediaId, Lba, Status);
+    if (!EFI_ERROR(Status)) {
+      DBG_X(DBG_PartitionInstallAddLbaOfsChildHandles, (PrBufxxdr(Mbr, BlockSize)));
+      if (PartitionValidAddLbaOfs (Mbr, LastBlock)) {
+        DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ValidMbr\n");
+        goto ValidMbr;
+      }
+    }
+
+    Status = DiskIo->ReadDisk(
+                     DiskIo,
+                     MediaId,
+                     LastBlock - Lba,
+                     BlockSize,
+                     Mbr
+                     );
+    DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ReadDisk MediaId=%"PRIx32" LastBlock - Lba=%"PRIx64" %r\n", MediaId, LastBlock - Lba, Status);
+    if (!EFI_ERROR(Status)) {
+      DBG_X(DBG_PartitionInstallAddLbaOfsChildHandles, (PrBufxxdr(Mbr, BlockSize)));
+      if (PartitionValidAddLbaOfs (Mbr, LastBlock)) {
+        DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ValidMbr\n");
+        goto ValidMbr;
+      }
+    }
+  } /* for */
+  goto Done;
+ValidMbr:
   //
   // We have a valid mbr - add each partition
   //
