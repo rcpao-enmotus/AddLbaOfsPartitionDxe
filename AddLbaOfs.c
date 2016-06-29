@@ -159,6 +159,7 @@ PartitionInstallAddLbaOfsChildHandles (
   BlockSize = BlockIo->Media->BlockSize;
   MediaId   = BlockIo->Media->MediaId;
   LastBlock = BlockIo->Media->LastBlock;
+  DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "BlockSize=%"PRIx64" MediaId=%"PRIx64" LastBlock=%"PRIx64"\n", BlockSize, MediaId, LastBlock);
 
   Mbr = AllocatePool (BlockSize);
   if (Mbr == NULL) {
@@ -244,8 +245,8 @@ ValidMbr:
       DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "AddLbaOfs=%"PRIx64"\n", AddLbaOfs);
       
       HdDev.PartitionNumber = PartitionNumber ++;
-      HdDev.PartitionStart  = UNPACK_UINT32 (Mbr->Partition[Index].StartingLBA + AddLbaOfs);
-      HdDev.PartitionSize   = UNPACK_UINT32 (Mbr->Partition[Index].SizeInLBA - AddLbaOfs);
+      HdDev.PartitionStart  = AddLbaOfs; /* UNPACK_UINT32 (Mbr->Partition[Index].StartingLBA); */
+      HdDev.PartitionSize   = LastBlock + 1 - AddLbaOfs; /* UNPACK_UINT32 (Mbr->Partition[Index].SizeInLBA); */
       CopyMem (HdDev.Signature, &(Mbr->UniqueMbrSignature[0]), sizeof (Mbr->UniqueMbrSignature));
 
       Status = PartitionInstallChildHandle (

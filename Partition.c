@@ -638,17 +638,24 @@ PartitionReadBlocks (
   OUT VOID                  *Buffer
   )
 {
+#undef FN
+#define FN "PartitionReadBlocks"
+#define DBG_PartitionReadBlocks DL_80 /* DL_DISABLED DL_80 */
   PARTITION_PRIVATE_DATA  *Private;
   UINT64                  Offset;
+
+  DBG_PR(DBG_PartitionReadBlocks, "MediaId=%"PRIx32" Lba=%"PRIx64" BufferSize=%d entered\n", MediaId, Lba, BufferSize);
 
   Private = PARTITION_DEVICE_FROM_BLOCK_IO_THIS (This);
 
   if (BufferSize % Private->BlockSize != 0) {
+    DBG_PR(DBG_PartitionReadBlocks, "BufferSize % Private->BlockSize = %d\n", BufferSize % Private->BlockSize);
     return ProbeMediaStatus (Private->DiskIo, MediaId, EFI_BAD_BUFFER_SIZE);
   }
 
   Offset = MultU64x32 (Lba, Private->BlockSize) + Private->Start;
   if (Offset + BufferSize > Private->End) {
+    DBG_PR(DBG_PartitionReadBlocks, "Offset+BufferSize=%"PRIx64" > Private->End=%"PRIx64"\n", Offset + BufferSize, Private->End);
     return ProbeMediaStatus (Private->DiskIo, MediaId, EFI_INVALID_PARAMETER);
   }
   //
@@ -1105,7 +1112,7 @@ PartitionInstallChildHandle (
   EFI_STATUS              Status;
   PARTITION_PRIVATE_DATA  *Private;
 
-  DBG_PR(DBG_PartitionInstallChildHandle, "entered\n");
+  DBG_PR(DBG_PartitionInstallChildHandle, "Start=%"PRIx64" End=%"PRIx64" BlockSize=%"PRIx32"\n", Start, End, BlockSize);
 
   Status  = EFI_SUCCESS;
   Private = AllocateZeroPool (sizeof (PARTITION_PRIVATE_DATA));
