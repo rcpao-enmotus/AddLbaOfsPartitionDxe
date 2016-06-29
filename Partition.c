@@ -645,17 +645,17 @@ PartitionReadBlocks (
   UINT64                  Offset;
   EFI_STATUS Status;
 
-  DBG_PR(DBG_PartitionReadBlocks, "MediaId=%"PRIx32" Lba=%"PRIx64" BufferSize=%d entered\n", MediaId, Lba, BufferSize);
+  //DBG_PR(DBG_PartitionReadBlocks, "MediaId=%"PRIx32" Lba=%"PRIx64" BufferSize=%d entered\n", MediaId, Lba, BufferSize);
 
   Private = PARTITION_DEVICE_FROM_BLOCK_IO_THIS (This);
 
-  DBG_PR(DBG_PartitionReadBlocks, "BufferSize(%d) %% Private->BlockSize(%"PRIx32") = %d\n", BufferSize, Private->BlockSize, BufferSize % Private->BlockSize);
+  //DBG_PR(DBG_PartitionReadBlocks, "BufferSize(%d) %% Private->BlockSize(%"PRIx32") = %d\n", BufferSize, Private->BlockSize, BufferSize % Private->BlockSize);
   if (BufferSize % Private->BlockSize != 0) {
     return ProbeMediaStatus (Private->DiskIo, MediaId, EFI_BAD_BUFFER_SIZE);
   }
 
   Offset = MultU64x32 (Lba, Private->BlockSize) + Private->Start;
-  DBG_PR(DBG_PartitionReadBlocks, "(Offset(%"PRIx64")+BufferSize(%d))=%"PRIx64" > Private->End=%"PRIx64"\n", Offset, BufferSize, Offset + BufferSize, Private->End);
+  //DBG_PR(DBG_PartitionReadBlocks, "(Offset(%"PRIx64")+BufferSize(%d))=%"PRIx64" > Private->End=%"PRIx64"\n", Offset, BufferSize, Offset + BufferSize, Private->End);
   if (Offset + BufferSize > Private->End) {
     return ProbeMediaStatus (Private->DiskIo, MediaId, EFI_INVALID_PARAMETER);
   }
@@ -666,7 +666,9 @@ PartitionReadBlocks (
   //
   //return Private->DiskIo->ReadDisk (Private->DiskIo, MediaId, Offset, BufferSize, Buffer);
   Status = Private->DiskIo->ReadDisk (Private->DiskIo, MediaId, Offset, BufferSize, Buffer);
-  DBG_PR(DBG_PartitionReadBlocks, "ReadDisk(Offset(%"PRIx64"), BufferSize(%d) %r\n", Offset, BufferSize, Status);
+  if (EFI_ERROR(Status)) {
+    DBG_PR(DBG_PartitionReadBlocks, "ReadDisk(Offset(%"PRIx64"), BufferSize(%d) %r\n", Offset, BufferSize, Status);
+  }
   return (Status);
 }
 
