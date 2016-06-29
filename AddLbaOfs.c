@@ -97,7 +97,8 @@ PartitionValidAddLbaOfs (
   }
   
   AddLbaOfs = SwapBytes64(*((UINT64 *)((UINT8 *)&Mbr->BootStrapCode[ADDLBAOFS_32_OFS])));
-
+  DBG_PR(DBG_PartitionValidMbr, "AddLbaOfs=%"PRIx64"\n", AddLbaOfs);
+  
   MbrValid = TRUE;
 
   return MbrValid;
@@ -176,7 +177,6 @@ PartitionInstallAddLbaOfsChildHandles (
     if (!EFI_ERROR(Status)) {
       DBG_X(DBG_PartitionInstallAddLbaOfsChildHandles, (PrBufxxdr(Mbr, BlockSize)));
       if (PartitionValidAddLbaOfs (Mbr, LastBlock)) {
-        DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ValidMbr\n");
         goto ValidMbr;
       }
     }
@@ -193,7 +193,6 @@ PartitionInstallAddLbaOfsChildHandles (
     if (!EFI_ERROR(Status)) {
       DBG_X(DBG_PartitionInstallAddLbaOfsChildHandles, (PrBufxxdr(Mbr, BlockSize)));
       if (PartitionValidAddLbaOfs (Mbr, LastBlock)) {
-        DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ValidMbr\n");
         goto ValidMbr;
       }
     }
@@ -201,6 +200,7 @@ PartitionInstallAddLbaOfsChildHandles (
   } /* for */
   goto Done;
 ValidMbr:
+  DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "ValidMbr\n");
   //
   // We have a valid mbr - add each partition
   //
@@ -241,6 +241,7 @@ ValidMbr:
     Index = 0;
     /* for (Index = 0; Index < MAX_MBR_PARTITIONS; Index++) { */
       AddLbaOfs = SwapBytes64(*((UINT64 *)((UINT8 *)&Mbr->BootStrapCode[ADDLBAOFS_32_OFS])));
+      DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "AddLbaOfs=%"PRIx64"\n", AddLbaOfs);
       
       HdDev.PartitionNumber = PartitionNumber ++;
       HdDev.PartitionStart  = UNPACK_UINT32 (Mbr->Partition[Index].StartingLBA + AddLbaOfs);
@@ -261,7 +262,7 @@ ValidMbr:
                 MBR_SIZE,
                 (BOOLEAN) (Mbr->Partition[Index].OSIndicator == EFI_PARTITION)
                 );
-
+      DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "PartitionInstallChildHandle %r\n", Status);
       if (!EFI_ERROR (Status)) {
         Found = EFI_SUCCESS;
       }
@@ -351,5 +352,6 @@ ValidMbr:
 Done:
   FreePool (Mbr);
 
+  DBG_PR(DBG_PartitionInstallAddLbaOfsChildHandles, "Found=%d\n", Found);
   return Found;
 }
