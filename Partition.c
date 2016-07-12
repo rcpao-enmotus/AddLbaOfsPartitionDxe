@@ -43,9 +43,9 @@ EFI_DRIVER_BINDING_PROTOCOL gPartitionDriverBinding = {
 //
 PARTITION_DETECT_ROUTINE mPartitionDetectRoutineTable[] = {
   PartitionInstallAddLbaOfsChildHandles,
-  PartitionInstallGptChildHandles,
-  PartitionInstallElToritoChildHandles,
-  PartitionInstallMbrChildHandles,
+  //PartitionInstallGptChildHandles,
+  //PartitionInstallElToritoChildHandles,
+  //PartitionInstallMbrChildHandles,
   NULL
 };
 
@@ -233,6 +233,8 @@ PartitionDriverBindingStart (
     }
   }
 
+  DEBUG((EFI_D_VERBOSE, "EFI_D_VERBOSE PartitionDriverBindingStart\n"));
+  DEBUG((EFI_D_BLKIO, "EFI_D_BLKIO PartitionDriverBindingStart\n"));
   DBG_PR(DBG_PartitionDriverBindingStart, "after RemainingDevicePath\n");
 
   //
@@ -667,7 +669,10 @@ PartitionReadBlocks (
   //return Private->DiskIo->ReadDisk (Private->DiskIo, MediaId, Offset, BufferSize, Buffer);
   Status = Private->DiskIo->ReadDisk (Private->DiskIo, MediaId, Offset, BufferSize, Buffer);
   if (EFI_ERROR(Status)) {
+    DEBUG((EFI_D_VERBOSE, "PartitionReadBlocks(Offset(%"PRIx64"), BufferSize(%d) %r\n", Offset, BufferSize, Status));
     DBG_PR(DBG_PartitionReadBlocks, "ReadDisk(Offset(%"PRIx64"), BufferSize(%d) %r\n", Offset, BufferSize, Status);
+    for (;;)
+      ;
   }
   return (Status);
 }
