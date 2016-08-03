@@ -33,7 +33,11 @@ EFI_DRIVER_BINDING_PROTOCOL gPartitionDriverBinding = {
   // Fat driver to make sure the DriverBindingStart() of the Partition driver
   // gets run before that of Fat driver so that all the partitions can be recognized.
   //
-  0xb,
+  /*
+  http://wiki.phoenix.com/wiki/index.php/EFI_DRIVER_BINDING_PROTOCOL
+  The version number of the UEFI driver that produced the EFI_DRIVER_BINDING_PROTOCOL. This field is used by the EFI boot service ConnectController() to determine the order that driver's Supported() service will be used when a controller needs to be started. EFI Driver Binding Protocol instances with higher Version values will be used before ones with lower Version values. The Version values of 0x0-0x0f and 0xfffffff0-0xffffffff are reserved for platform/OEM specific drivers. The Version values of 0x10-0xffffffef are reserved for IHV-developed drivers.
+  */
+  0xffffffff /* 0xffffffef /* 0xb */, //TBD
   NULL,
   NULL
 };
@@ -651,6 +655,8 @@ PartitionReadBlocks (
 
   Private = PARTITION_DEVICE_FROM_BLOCK_IO_THIS (This);
 
+  //{volatile BOOLEAN stay; for (stay = TRUE; stay;) stay = TRUE;} //TBD infinite loop to verify this works.
+
   //DBG_PR(DBG_PartitionReadBlocks, "BufferSize(%d) %% Private->BlockSize(%"PRIx32") = %d\n", BufferSize, Private->BlockSize, BufferSize % Private->BlockSize);
   if (BufferSize % Private->BlockSize != 0) {
     return ProbeMediaStatus (Private->DiskIo, MediaId, EFI_BAD_BUFFER_SIZE);
@@ -671,8 +677,7 @@ PartitionReadBlocks (
   if (EFI_ERROR(Status)) {
     DEBUG((EFI_D_VERBOSE, "PartitionReadBlocks(Offset(%"PRIx64"), BufferSize(%d) %r\n", Offset, BufferSize, Status));
     DBG_PR(DBG_PartitionReadBlocks, "ReadDisk(Offset(%"PRIx64"), BufferSize(%d) %r\n", Offset, BufferSize, Status);
-    for (;;)
-      ;
+    {volatile BOOLEAN stay; for (stay = TRUE; stay;) stay = TRUE;} //TBD infinite loop to indicate an error
   }
   return (Status);
 }
