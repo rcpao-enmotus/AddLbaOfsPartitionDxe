@@ -8,7 +8,7 @@ Offset Description
 0x0000 INT 18h
 0x0010 "AddLbaOfs\0" signature
 0x0028 64-bit (8-byte) big-endian value (0x2000 in this example)
-0x01fe MBR signature (must not be '55 aa' because the built-in PartitionDxe+Mbr.c prevents us from reading LBA0)
+0x01fe MBR signature (must not be '55 aa' as the built-in PartitionDxe/Mbr.c prevents reading LBA0)
 
 0x0000 cd 18
 0x0010 41 64 64 4c 62 61 4f 66-73 00 00 00 00 00 00 00  AddLbaOfs.......
